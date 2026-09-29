@@ -1,26 +1,8 @@
-# Pixel Perfect Mirror
+# School Marks System
 
-Implement exactly the screenshot and nothing else
+Marks entry, marklists and report cards for the school.
 
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://pixel-perfect-display-7302.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/ec06fb69-2124-4a20-bb52-5fe435a9ff5c).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+## Run locally
+    npm install
+    cp .env.example .env   # then fill in your Supabase values
+    npm run dev

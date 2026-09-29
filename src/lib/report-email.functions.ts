@@ -13,14 +13,13 @@ const schema = z.object({
 
 export type SendResult = { learnerId: string; status: "sent" | "failed" | "no_email"; error?: string };
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
+const GATEWAY_URL = "https://api.resend.com";
 
 /** Emails report card PDFs to parents. Only admins or the learner's class teacher may send. */
 export const sendReportCards = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => schema.parse(input))
   .handler(async ({ data, context }): Promise<SendResult[]> => {
-    const lovableKey = process.env["LOVABLE_API_KEY"];
     const resendKey = process.env["RESEND_API_KEY"];
     const from = process.env["RESEND_FROM_EMAIL"] || "onboarding@resend.dev";
     const { data: settings } = await context.supabase.from("school_settings").select("school_name, email").maybeSingle();
@@ -43,7 +42,7 @@ export const sendReportCards = createServerFn({ method: "POST" })
       let res: SendResult;
       if (!learner || !to) {
         res = { learnerId: item.learnerId, status: "no_email" };
-      } else if (!lovableKey || !resendKey) {
+      } else if (!resendKey) {
         res = { learnerId: item.learnerId, status: "failed", error: "Email service not connected" };
       } else {
         const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
@@ -55,8 +54,7 @@ export const sendReportCards = createServerFn({ method: "POST" })
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${lovableKey}`,
-              "X-Connection-Api-Key": resendKey,
+              Authorization: `Bearer ${resendKey}`,
             },
             body: JSON.stringify({
               from: `${school} <${from}>`,
